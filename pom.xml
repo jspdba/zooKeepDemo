@@ -13,6 +13,7 @@
     <modules>
         <module>zoodemo-server</module>
         <module>zoodemo-client</module>
+        <module>zoodemo-lock</module>
     </modules>
 
     <build>
