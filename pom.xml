@@ -14,6 +14,7 @@
         <module>zoodemo-server</module>
         <module>zoodemo-client</module>
         <module>zoodemo-lock</module>
+        <module>zoodemo-queue</module>
     </modules>
 
     <build>
