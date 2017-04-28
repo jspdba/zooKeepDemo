@@ -71,7 +71,7 @@ public class WorkServer {
     private void registMeToZookeeper() {
         String path = serversPath.concat("/").concat(serverData.getAddress());
         try {
-            zkClient.createEphemeral(path,JacksonUtil.toJson(serverConfig));
+            zkClient.createEphemeral(path,JacksonUtil.toJson(serverConfig).getBytes());
         }catch (ZkNoNodeException e){
              //父节点不存在
             zkClient.createPersistent(serversPath,true);

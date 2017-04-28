@@ -42,10 +42,10 @@ public class SubscribeZkClient {
             initConfig.setDbUrl("jdbc:mysql://localhost:3306/mydb");
 
             //client管理服务器
-//        ZkClient clientManager=new ZkClient(ZK_SERVERS,5000,5000,new BytesPushThroughSerializer());
+            ZkClient clientManager=new ZkClient(ZK_SERVERS,5000,5000,new BytesPushThroughSerializer());
 
-//        manageServer = new ManagerServer(SERVERS_PATH, COMMAND_PATH,CONFIG_PATH,clientManage,initConfig);
-//        manageServer.start();
+            manageServer = new ManagerServer(SERVERS_PATH, COMMAND_PATH,CONFIG_PATH,clientManager,initConfig);
+            manageServer.start();
 
             for (int i = 0; i < CLIENT_LIMIT; i++) {
                 ZkClient zkClient=new ZkClient(ZK_SERVERS,5000,5000,new BytesPushThroughSerializer());
