@@ -29,21 +29,31 @@ public class BaseDistributedLock {
     BaseDistributedLock(ZkClient zkClient, String path, String lockname){
         this.zkClient=zkClient;
         this.basePath=path;
-        this.path="/".concat(lockname);
+        this.path=path.concat("/").concat(lockname);
         this.lockname=lockname;
     }
 
     private void deleteOurPath(String ourPath) throws Exception{
+
+        System.out.println("delete "+ourPath);
         zkClient.delete(ourPath);
     }
 
 
-    private String createLockNode(ZkClient client,String path){
+    private String createLockNode(ZkClient client,String path) {
 
         System.out.println("create path="+path);
         return client.createEphemeralSequential(path,null);
     }
 
+    /**
+     * 尝试获取锁
+     * @param startMillis
+     * @param millisToWait
+     * @param ourPath
+     * @return
+     * @throws Exception
+     */
     private boolean waitToLock(long startMillis, Long millisToWait, String ourPath) throws Exception {
         boolean haveTheLock = false;
         boolean doDelete = false;
@@ -172,8 +182,10 @@ public class BaseDistributedLock {
         int             retryCount = 0;
 
         while (!isDone){
-            ourPath = createLockNode(zkClient, path);
+
+            isDone = true;
             try {
+                ourPath = createLockNode(zkClient, path);
                 waitToLock(startMillis,millisToWait,ourPath);
             } catch (ZkNoNodeException  e) {
 //                e.printStackTrace();

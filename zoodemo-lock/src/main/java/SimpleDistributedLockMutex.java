@@ -1,5 +1,6 @@
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit;
         private final ZkClient zkClient;
         private final String path;
 
-        private BaseDistributedLock baseDistributedLock;
+        private final BaseDistributedLock baseDistributedLock;
 
         private static final String LOCK_NAME="LOCK";
 
@@ -28,8 +29,12 @@ import java.util.concurrent.TimeUnit;
         try {
             this.lockPath = baseDistributedLock.attemptLock(0,null);
         } catch (ZkNoNodeException e) {
-            e.printStackTrace();
-            throw e;
+            //父节点不存在
+            if(!zkClient.exists(path)) {
+                zkClient.createPersistent(path, true);
+            }else{
+                throw e;
+            }
         }
     }
 
@@ -40,8 +45,13 @@ import java.util.concurrent.TimeUnit;
         try {
             this.lockPath = baseDistributedLock.attemptLock(time,unit);
         } catch (ZkNoNodeException e) {
-            e.printStackTrace();
-            throw e;
+            //父节点不存在
+            if(!zkClient.exists(path)) {
+                zkClient.createPersistent(path, true);
+            }else{
+                e.printStackTrace();
+                throw e;
+            }
         }
         return true;
     }
@@ -50,7 +60,9 @@ import java.util.concurrent.TimeUnit;
     public void release() throws Exception {
         System.out.println("release");
         try {
-            baseDistributedLock.releaseLock(this.lockPath);
+            if(!StringUtils.isBlank(this.lockPath)){
+                baseDistributedLock.releaseLock(this.lockPath);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
