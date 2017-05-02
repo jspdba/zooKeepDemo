@@ -15,6 +15,7 @@
         <module>zoodemo-client</module>
         <module>zoodemo-lock</module>
         <module>zoodemo-queue</module>
+        <module>zookeeper-name</module>
     </modules>
 
     <build>
